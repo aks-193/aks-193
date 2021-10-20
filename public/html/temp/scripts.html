@@ -1,0 +1,51 @@
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="{$MEDIA$}/js/jquery.min.js"></script>
+   
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <!-- Latest compiled and minified JavaScript -->    
+    <script src="{$MEDIA$}/js/popper.min.js"></script>
+    <script src="{$MEDIA$}/js/bootstrap.min.js"></script>
+    <script src="{$MEDIA$}/js/main.js"></script> 
+     <script>
+   jQuery(document).ready(function($) {
+    $("#service").on('change', function() {
+    	$('#area').val('');
+        $('#unit').val('');
+        $('#cost').val('');
+    	var baseurl = window.location.origin+window.location.pathname;
+        var id = $(this).val();
+        if(id){
+               $.ajax ({
+                type: 'POST',
+                url: baseurl+'page/get_cost_by_service_id',
+                data:'service_id='+id,
+                success : function(response) {
+                	
+                    $('#unit').val(response);
+                    var area = $('#area').val();
+                    if(area  != '' && response != ''){
+                    	calculateCost(area,response);
+                    }
+                    
+                },error:function(e){
+                alert("error");}
+            });
+        }
+    });
+
+    	$(".getCost").on("change paste keyup cut select", function() {
+  			var area = $('#area').val();
+  			var unit = $('#unit').val();
+  			 if(area  != '' && unit != ''){
+  				var cost = calculateCost(area,unit);
+	  		}
+  			$('#cost').val('');
+  			$('#cost').val(cost);
+	});
+
+	function calculateCost(area, unit){
+		var cost = area*unit;
+		return cost.toFixed(2);
+	}
+});
+    </script> 
